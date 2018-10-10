@@ -1,6 +1,6 @@
 import pandas
 
-df = pandas.read_excel('sample.xls')
+df = pandas.read_excel('data.txt')
 # print the column names
 print
 df.columns
