@@ -1,11 +1,6 @@
-import pandas
+import pandas as pd
 
-df = pandas.read_excel('data.txt')
-# print the column names
-print
-df.columns
-# get the values for a given column
-values = df['Arm_id'].values
-# get a data frame with selected columns
-FORMAT = ['Arm_id', 'DSPName', 'Pincode']
-df_selected = df[FORMAT]
+data = pd.read_table('data.sas', usecols=[14, 2, 5])
+
+print(data)
+
