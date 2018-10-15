@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-import xlrd
 import csv
 
 
@@ -13,59 +12,78 @@ def Sum_List(A,i,offset):
     return value
 
 dataLocation = "E:\\ASU USA\\Subjects\\CSE 564 Software Design\\Assignment\\data\\"
-data = pd.read_table(dataLocation + 'mode1\Student1mode1\Student1mode1.2016-11-22_074716.datacol.sas',
-                      usecols=['Velocity', 'LanePos', 'SpeedLimit', 'Steer', 'Accel', 'Brake', 'LongAccel', 'HeadwayTime', 'HeadwayDist'])
 Vh_Output_Data = dataLocation + "Vh_Output_Data.xlsx" 
 local_path = "E://ASU USA//Subjects//CSE 564 Software Design//Assignment//Answer//"
 
-# print(data)
-
-file_length = len(data)
-
-offset = file_length // 5
-
-
-# iteration on data sets and splitting the file
-if file_length % offset == 0:
-    chuncks_length = range(int(file_length/offset))
-else:
-    chuncks_length = range(int(file_length/offset)+1)
-
+flag = 0
+current_student_id = ""
 
 # creating the output csv
-with open(local_path+'persons.csv', 'w', newline='') as csvfile:
+with open(local_path+'student_club.csv', 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)    
         filewriter.writerow(["Velocity", 'LanePos','SpeedLimit', 'Steer','Accel', 'Brake','LongAccel', 'HeadwayTime','HeadwayDist','User','Mode','Speed','Number Of Errors','Response Time','Number of Steps'])
 
 
-#for i in chuncks_length:
-for i in chuncks_length:
+
+for folder in range(30):
+    Student_Id = 1 + folder;
+    for Mode_Id in range (1,4):    
+        #Mode_Id = Mode_Id + folder;
+        folderName = dataLocation + "mode" + str(Mode_Id) + "\\Student" + str(Student_Id) + "mode" + str(Mode_Id) + "\\"
+        #find the biggest file in this folder
+        
+        biggest = ("", -1)
+        for item in os.listdir(folderName):
+            itemsize = os.path.getsize(folderName + item)
+            if itemsize > biggest[1] and item.endswith(".sas"):
+                biggest = (folderName + item, itemsize)
+        
+        
+        xls = pd.ExcelFile(Vh_Output_Data)
+        df = xls.parse('Sheet1',  index_col=None, na_values=['NA'])
+        divide_offset = 0
+        for k in range(flag+1,len(df)):
+            if(df.loc[flag][0] == Mode_Id):
+                divide_offset = divide_offset + 1
+                flag = flag + 1
+            else:
+                break
+        
+        data = pd.read_table(biggest[0],
+                      usecols=['Velocity', 'LanePos', 'SpeedLimit', 'Steer', 'Accel', 'Brake', 'LongAccel', 'HeadwayTime', 'HeadwayDist'])
+
+        file_length = len(data)
+
+        #PAD ZEROS HERE
+        offset = file_length // divide_offset
+
+        for i in range(divide_offset):
 
     
-    #Fetching data from output file
-    #Hardcoding taking first 6 lines from output VH fle
-    Student_Id = 1;
-    xls = pd.ExcelFile(Vh_Output_Data)
-    df = xls.parse('Sheet1', skiprows=0, index_col=None, na_values=['NA'])
-    Mode = df.loc[i][0]
-    Speed = df.loc[i][1]
-    NOE = df.loc[i][2]
-    Response_Time = df.loc[i][3]
-    No_Steps = df.loc[i][4]
-
+            #Fetching data from output file
+            #Hardcoding taking first 6 lines from output VH fle
+            
+            xls = pd.ExcelFile(Vh_Output_Data)
+            df = xls.parse('Sheet1', skiprows=0, index_col=None, na_values=['NA'])
+            Mode = df.loc[i][0]
+            Speed = df.loc[i][1]
+            NOE = df.loc[i][2]
+            Response_Time = df.loc[i][3]
+            No_Steps = df.loc[i][4]
     
-    df = data[i*offset: (i+1)*offset]
-    Velocity = Sum_List(df.Velocity,i,offset)/offset
-    LanePos =  Sum_List(df.LanePos,i,offset)/offset
-    SpeedLimit = Sum_List(df.SpeedLimit,i,offset)/offset
-    Steer =  Sum_List(df.Steer,i,offset)/offset
-    
-    Accel = Sum_List(df.Accel,i,offset)/offset
-    Brake =  Sum_List(df.Brake,i,offset)/offset
-    LongAccel = Sum_List(df.LongAccel,i,offset)/offset
-    HeadwayTime =  Sum_List(df.HeadwayTime,i,offset)/offset
-    HeadwayDist =  Sum_List(df.HeadwayDist,i,offset)/offset
-
-    with open(local_path+'persons.csv', 'a', newline='') as csvfile:
-        filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        filewriter.writerow([Velocity, LanePos,SpeedLimit, Steer,Accel, Brake,LongAccel, HeadwayTime,HeadwayDist,Student_Id,Mode,Speed,NOE,Response_Time,No_Steps])
+        
+            df = data[i*offset: (i+1)*offset]
+            Velocity = Sum_List(df.Velocity,i,offset)/offset
+            LanePos =  Sum_List(df.LanePos,i,offset)/offset
+            SpeedLimit = Sum_List(df.SpeedLimit,i,offset)/offset
+            Steer =  Sum_List(df.Steer,i,offset)/offset
+            
+            Accel = Sum_List(df.Accel,i,offset)/offset
+            Brake =  Sum_List(df.Brake,i,offset)/offset
+            LongAccel = Sum_List(df.LongAccel,i,offset)/offset
+            HeadwayTime =  Sum_List(df.HeadwayTime,i,offset)/offset
+            HeadwayDist =  Sum_List(df.HeadwayDist,i,offset)/offset
+        
+            with open(local_path+'student_club.csv', 'a', newline='') as csvfile:
+                filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                filewriter.writerow([Velocity, LanePos,SpeedLimit, Steer,Accel, Brake,LongAccel, HeadwayTime,HeadwayDist,Student_Id,Mode_Id,Speed,NOE,Response_Time,No_Steps])
