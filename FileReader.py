@@ -17,6 +17,7 @@ local_path = "E://ASU USA//Subjects//CSE 564 Software Design//Assignment//Answer
 
 flag = 0
 current_student_id = ""
+max_student = 30
 
 # creating the output csv
 with open(local_path+'student_club.csv', 'w', newline='') as csvfile:
@@ -25,7 +26,7 @@ with open(local_path+'student_club.csv', 'w', newline='') as csvfile:
 
 
 
-for folder in range(30):
+for folder in range(max_student):
     Student_Id = 1 + folder;
     for Mode_Id in range (1,4):    
         #Mode_Id = Mode_Id + folder;
@@ -35,9 +36,8 @@ for folder in range(30):
         biggest = ("", -1)
         for item in os.listdir(folderName):
             itemsize = os.path.getsize(folderName + item)
-            if itemsize > biggest[1] and item.endswith(".sas"):
+            if itemsize > biggest[1] and item.endswith(".txt"):
                 biggest = (folderName + item, itemsize)
-        
         
         xls = pd.ExcelFile(Vh_Output_Data)
         df = xls.parse('Sheet1',  index_col=None, na_values=['NA'])
@@ -53,10 +53,26 @@ for folder in range(30):
                       usecols=['Velocity', 'LanePos', 'SpeedLimit', 'Steer', 'Accel', 'Brake', 'LongAccel', 'HeadwayTime', 'HeadwayDist'])
 
         file_length = len(data)
-
+        
         #PAD ZEROS HERE
+        if(file_length % divide_offset != 0):
+            zero_lines_add = divide_offset - file_length % divide_offset
+            
+            #Adding zeros to start
+            for loop in range(zero_lines_add // 2):
+                data.loc[-1] = [0,0,0,0,0,0,0,0,0]
+                data.index = data.index + 1
+                data = data.sort_index()
+            
+            #Adding zeros to end
+            zero_lines_add = zero_lines_add - zero_lines_add // 2
+            for loop in range(zero_lines_add):
+                data.loc[len(data)] = [0,0,0,0,0,0,0,0,0]
+                data = data.sort_index()
+                
+        file_length = len(data)   
         offset = file_length // divide_offset
-
+            
         for i in range(divide_offset):
 
     
