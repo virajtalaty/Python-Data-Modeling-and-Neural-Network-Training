@@ -11,10 +11,11 @@ def Sum_List(A,i,offset):
             value = value + float(A[j])
     return value
 
-dataLocation = "E:\\ASU USA\\Subjects\\CSE 564 Software Design\\Assignment\\data\\"
+dataLocation = "E://ASU USA//Subjects//CSE 564 Software Design//Assignment//Assignment-1//data//"
 Vh_Output_Data = dataLocation + "Vh_Output_Data.xlsx" 
-local_path = "E://ASU USA//Subjects//CSE 564 Software Design//Assignment//Answer//"
+local_path = "E://ASU USA//Subjects//CSE 564 Software Design//Assignment//Assignment-1//Answer//"
 
+counter = 0
 flag = 0
 current_student_id = ""
 max_student = 30
@@ -22,7 +23,7 @@ max_student = 30
 # creating the output csv
 with open(local_path+'student_club.csv', 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)    
-        filewriter.writerow(["Velocity", 'LanePos','SpeedLimit', 'Steer','Accel', 'Brake','LongAccel', 'HeadwayTime','HeadwayDist','User','Mode','Speed','Number Of Errors','Response Time','Number of Steps'])
+        filewriter.writerow(["","Velocity", 'LanePos','SpeedLimit', 'Steer','Accel', 'Brake','LongAccel', 'HeadwayTime','HeadwayDist','User','Mode','Speed','Number Of Errors','Response Time','Number of Steps'])
 
 
 
@@ -102,4 +103,5 @@ for folder in range(max_student):
         
             with open(local_path+'student_club.csv', 'a', newline='') as csvfile:
                 filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                filewriter.writerow([Velocity, LanePos,SpeedLimit, Steer,Accel, Brake,LongAccel, HeadwayTime,HeadwayDist,Student_Id,Mode_Id,Speed,NOE,Response_Time,No_Steps])
+                filewriter.writerow([counter,Velocity, LanePos,SpeedLimit, Steer,Accel, Brake,LongAccel, HeadwayTime,HeadwayDist,Student_Id,Mode_Id,Speed,NOE,Response_Time,No_Steps])
+                counter = counter + 1
